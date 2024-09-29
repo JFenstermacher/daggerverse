@@ -1,4 +1,4 @@
-module dagger/buf
+module github.com/JFenstermacher/daggerverse/buf
 
 go 1.23.1
 
