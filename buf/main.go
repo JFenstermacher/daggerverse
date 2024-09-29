@@ -16,7 +16,7 @@ package main
 
 import (
 	"context"
-	"dagger/buf/internal/dagger"
+	"github.com/JFenstermacher/daggerverse/buf/internal/dagger"
 	"fmt"
 	"strings"
 )
