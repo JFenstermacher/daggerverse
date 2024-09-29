@@ -15,6 +15,7 @@
 package main
 
 import (
+	"context"
 	"dagger/buf/internal/dagger"
 	"fmt"
 	"strings"
@@ -36,9 +37,15 @@ type Buf struct {
 
 	// Project source directory
 	Source *dagger.Directory
+
+	// Path to config file
+	Config string
 }
 
 func New(
+	// Context
+	ctx context.Context,
+
 	// Project source directory
 	source *dagger.Directory,
 
@@ -46,11 +53,21 @@ func New(
 	// +optional
 	// +default=[]
 	packages []string,
-) *Buf {
+
+	// Path to buf.yaml
+	// +optional
+	// +default="proto/buf.yaml"
+	config string,
+) (*Buf, error) {
 	defPackages := map[string]string{
 		"github.com/bufbuild/buf/cmd/buf":                  "latest",
 		"google.golang.org/protobuf/cmd/protoc-gen-go":     "latest",
 		"connectrpc.com/connect/cmd/protoc-gen-connect-go": "latest",
+	}
+
+	_, err := source.File(config).ID(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("no buf.yaml file found")
 	}
 
 	for _, p := range packages {
@@ -71,13 +88,14 @@ func New(
 	return &Buf{
 		Packages: packages,
 		Source:   source,
-	}
+		Config:   config,
+	}, nil
 }
 
 func (b *Buf) Container() *dagger.Container {
 	ctr := dag.
 		Container().
-		From("bufbuild/buf@latest").
+		From("bufbuild/buf:latest").
 		WithWorkdir(WorkDir).
 		WithMountedDirectory(WorkDir, b.Source)
 
@@ -91,5 +109,5 @@ func (b *Buf) Container() *dagger.Container {
 func (b *Buf) Lint() *dagger.Container {
 	return b.
 		Container().
-		WithExec([]string{"buf", "lint"})
+		WithExec([]string{"buf", "lint", "--config", b.Config})
 }
