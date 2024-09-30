@@ -67,10 +67,10 @@ func New(
 		"connectrpc.com/connect/cmd/protoc-gen-connect-go": "latest",
 	}
 
-	_, err := source.File(config).ID(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("no buf.yaml file found")
-	}
+	// _, err := source.File(config).ID(ctx)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("no buf.yaml file found")
+	// }
 
 	for _, p := range packages {
 		parts := strings.Split(p, "@")
