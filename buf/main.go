@@ -51,10 +51,10 @@ func New(
 		"connectrpc.com/connect/cmd/protoc-gen-connect-go": "latest",
 	}
 
-	// _, err := source.File(config).ID(ctx)
-	// if err != nil {
-	// 	return nil, fmt.Errorf("no buf.yaml file found")
-	// }
+	_, err := source.File(config).ID(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("no buf.yaml file found")
+	}
 
 	for _, p := range packages {
 		parts := strings.Split(p, "@")
@@ -82,12 +82,12 @@ func New(
 func (b *Buf) Container() *dagger.Container {
 	ctr := dag.
 		Container().
-		From("bufbuild/buf:latest").
+		From("golang:latest").
 		WithWorkdir(WorkDir).
 		WithMountedDirectory(WorkDir, b.Source)
 
 	for _, p := range b.Packages {
-		ctr.WithExec([]string{"go", "install", p})
+		ctr = ctr.WithExec([]string{"go", "install", p})
 	}
 
 	return ctr
@@ -98,6 +98,16 @@ func (b *Buf) Lint() *dagger.Container {
 	return b.
 		Container().
 		WithExec([]string{"buf", "lint", "--config", b.Config})
+}
+
+// Formats protobuf files
+func (b *Buf) Format() *dagger.Directory {
+	out := b.
+		Container().
+		WithExec([]string{"buf", "format", "--config", b.Config}).
+		Directory(WorkDir)
+
+	return b.Source.Diff(out)
 }
 
 // Generate services and clients based on buf.gen.yaml
