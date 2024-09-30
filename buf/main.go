@@ -48,7 +48,7 @@ func New(
 
 	// Project source directory
 	// +defaultPath="/"
-	// +ignore=["**", "!*.proto", "!*.yaml"]
+	// +ignore=["**", "!**/*.proto", "!**/*.yaml", "!**/*.yml"]
 	source *dagger.Directory,
 
 	// Packages to install
