@@ -47,7 +47,7 @@ func New(
 	ctx context.Context,
 
 	// Project source directory
-	// +defaultPath="/"
+	// +defaultPath="."
 	source *dagger.Directory,
 
 	// Packages to install
