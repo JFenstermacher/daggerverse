@@ -83,12 +83,13 @@ func (b *Buf) Container() *dagger.Container {
 	ctr := dag.
 		Container().
 		From("golang:latest").
-		WithWorkdir(WorkDir).
-		WithMountedDirectory(WorkDir, b.Source)
+		WithWorkdir(WorkDir)
 
 	for _, p := range b.Packages {
 		ctr = ctr.WithExec([]string{"go", "install", p})
 	}
+
+	ctr = ctr.WithMountedDirectory(WorkDir, b.Source)
 
 	return ctr
 }
