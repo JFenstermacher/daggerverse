@@ -16,8 +16,8 @@ package main
 
 import (
 	"context"
-	"github.com/JFenstermacher/daggerverse/buf/internal/dagger"
 	"fmt"
+	"github.com/JFenstermacher/daggerverse/buf/internal/dagger"
 	"strings"
 )
 
@@ -47,6 +47,8 @@ func New(
 	ctx context.Context,
 
 	// Project source directory
+	// +defaultPath="/"
+	// +ignore=["**", "!*.proto", "!*.yaml"]
 	source *dagger.Directory,
 
 	// Packages to install
