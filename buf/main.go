@@ -58,7 +58,7 @@ func New(
 
 	// Path to buf.yaml
 	// +optional
-	// +default="proto/buf.yaml"
+	// +default="buf.yaml"
 	config string,
 ) (*Buf, error) {
 	defPackages := map[string]string{
